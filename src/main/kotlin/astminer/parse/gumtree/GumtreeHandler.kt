@@ -1,20 +1,29 @@
 package astminer.parse.gumtree
 
-import astminer.common.model.ParseResult
-import astminer.common.model.HandlerFactory
-import astminer.common.model.LanguageHandler
-import astminer.parse.gumtree.java.GumTreeJavaParser
-import astminer.parse.gumtree.java.GumTreeJavaFunctionSplitter
+import astminer.common.model.*
+import astminer.parse.gumtree.java.JDT.GumTreeJavaJDTParser
+import astminer.parse.gumtree.java.JDT.GumTreeJavaJDTFunctionSplitter
+import astminer.parse.gumtree.java.srcML.GumTreeJavaSrcmlParser
+import astminer.parse.gumtree.java.srcML.GumTreeSrcmlFunctionSplitter
 import astminer.parse.gumtree.python.GumTreePythonFunctionSplitter
 import astminer.parse.gumtree.python.GumTreePythonParser
 import java.io.File
 
-object GumtreeJavaHandlerFactory : HandlerFactory {
-    override fun createHandler(file: File): LanguageHandler<GumTreeNode> = JavaGumtreeHandler(file)
+object GumTreeJavaSrcmlHandlerFactory: HandlerFactory {
+    override fun createHandler(file: File): LanguageHandler<out Node> = GumTreeJavaSrcmlHandler(file)
 
-    class JavaGumtreeHandler(file: File) : LanguageHandler<GumTreeNode>() {
-        override val splitter = GumTreeJavaFunctionSplitter()
-        override val parseResult: ParseResult<GumTreeNode> = GumTreeJavaParser().parseFile(file)
+    class GumTreeJavaSrcmlHandler(file: File) : LanguageHandler<GumTreeNode>() {
+        override val parseResult: ParseResult<GumTreeNode> = GumTreeJavaSrcmlParser().parseFile(file)
+        override val splitter: TreeFunctionSplitter<GumTreeNode> = GumTreeSrcmlFunctionSplitter()
+    }
+}
+
+object GumtreeJavaJDTHandlerFactory : HandlerFactory {
+    override fun createHandler(file: File): LanguageHandler<GumTreeNode> = GumtreeJavaJDTHandler(file)
+
+    class GumtreeJavaJDTHandler(file: File) : LanguageHandler<GumTreeNode>() {
+        override val splitter = GumTreeJavaJDTFunctionSplitter()
+        override val parseResult: ParseResult<GumTreeNode> = GumTreeJavaJDTParser().parseFile(file)
     }
 }
 

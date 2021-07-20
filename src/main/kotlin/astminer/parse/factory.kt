@@ -7,7 +7,8 @@ import astminer.parse.antlr.AntlrJavaHandlerFactory
 import astminer.parse.antlr.AntlrJavascriptHandlerFactory
 import astminer.parse.antlr.AntlrPHPHandlerFactory
 import astminer.parse.antlr.AntlrPythonHandlerFactory
-import astminer.parse.gumtree.GumtreeJavaHandlerFactory
+import astminer.parse.gumtree.GumTreeJavaSrcmlHandlerFactory
+import astminer.parse.gumtree.GumtreeJavaJDTHandlerFactory
 import astminer.parse.gumtree.GumtreePythonHandlerFactory
 
 fun getHandlerFactory(extension: FileExtension, parserType: ParserType): HandlerFactory {
@@ -15,13 +16,21 @@ fun getHandlerFactory(extension: FileExtension, parserType: ParserType): Handler
         ParserType.GumTree -> getGumtreeHandlerFactory(extension)
         ParserType.Antlr -> getAntlrHandlerFactory(extension)
         ParserType.Fuzzy -> getFuzzyHandlerFactory(extension)
+        ParserType.GumTreeSrcml -> getGumTreeSrcmlHandlerFactory(extension)
     }
 }
 
 private fun getGumtreeHandlerFactory(extension: FileExtension): HandlerFactory {
     return when (extension) {
-        FileExtension.Java -> GumtreeJavaHandlerFactory
+        FileExtension.Java -> GumtreeJavaJDTHandlerFactory
         FileExtension.Python -> GumtreePythonHandlerFactory
+        else -> throw UnsupportedOperationException()
+    }
+}
+
+private fun getGumTreeSrcmlHandlerFactory(extension: FileExtension): HandlerFactory {
+    return when (extension) {
+        FileExtension.Java -> GumTreeJavaSrcmlHandlerFactory
         else -> throw UnsupportedOperationException()
     }
 }
